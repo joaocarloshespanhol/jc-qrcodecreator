@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@next/font": "^14.2.15",
+    "motion": "^12.12.2",
     "next": "15.3.2",
     "qrcode.react": "^4.2.0",
     "react": "^19.0.0",

@@ -6,6 +6,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 import { useRef } from 'react';
+import { motion } from 'framer-motion';
+import { fadeIn } from './variants';
 
 export default function Home() {
   
@@ -46,13 +48,23 @@ export default function Home() {
 
   return (
     <main className="flex flex-col min-h-screen justify-center items-center bg-gradient-to-t from-[#00082B] to-[#3F81E8] px-4 py-8 md:px-12">
-      <span className="mt-8 text-4xl md:text-6xl text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-[#3F81E8]">
+      <motion.span
+        variants={fadeIn('left', 0.3 )}
+        initial='hidden'
+        whileInView={'show'}
+        viewport={{ once: false, amount: 0.3 }}
+        className="mt-8 text-4xl md:text-6xl text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-[#3F81E8]">
         OLÁ, SEJA BEM VINDO!
-      </span>
+      </motion.span>
 
-      <span className="text-xl md:text-3xl mt-10 md:mt-20 font-extrabold text-white text-center">
+      <motion.span
+        variants={fadeIn('up', 0.3 )}
+        initial='hidden'
+        whileInView={'show'}
+        viewport={{ once: false, amount: 0.3 }}
+        className="text-xl md:text-3xl mt-10 md:mt-20 font-extrabold text-white text-center">
         Crie QR codes dinâmicos, ilimitados e de forma prática.
-      </span>
+      </motion.span>
 
       <div className="flex flex-col md:flex-row bg-white w-full max-w-5xl mt-10 rounded-xl p-6 md:p-12 gap-8">
 
@@ -60,7 +72,7 @@ export default function Home() {
           <p className='text-black text-lg font-semibold text-center md:text-start'>Digite seu link</p>
           <input
             type="text"
-            placeholder="Digite o link aqui"
+            placeholder="Insira o link aqui"
             value={inputUrl}
             onChange={(e) => setinputUrl(e.target.value)}
             className="bg-zinc-200 text-black rounded-md text-center p-2 w-full mt-1"
