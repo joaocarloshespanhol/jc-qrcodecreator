@@ -1,126 +1,151 @@
 'use client'
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { QRCodeCanvas} from 'qrcode.react';
+import { QRCodeCanvas } from 'qrcode.react';
 import { FaUpload } from 'react-icons/fa';
-
+import Link from 'next/link';
+import Image from 'next/image';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 export default function Home() {
+
+  const [inputUrl, setinputUrl] = useState<string>('');
+  const [fgColor, setFgColor] = useState<string>('#00082B');
+  const [bgColor, setBgColor] = useState<string>('#FFFFFF');
+  const [logoUrl, setLogoUrl] = useState<string>('/fav.png');
+
+  const handleLogoSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          if (reader.result) {
+            setLogoUrl(reader.result as string);
+          }
+        }
+        reader.readAsDataURL(file);
+    }
+  }
+  
   return (
-    <main className="flex flex-col h-screen justify-center items-center bg-linear-to-t from-[#00082B] to-[#3F81E8] p-12 pt-12">
-          <span className='text-5xl text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-[#3F81E8]'>OLÁ, SEJA BEM VINDO! </span>
-              <span className="text-3xl mt-20 font-extrabold text-white text-center">Crie QR codes dinâmicos, ilimitados e de forma prática.</span>
-                <div className='flex flex-col md:flex-row bg-white w-auto h-auto mt-10 rounded-xl p-12 pt-12 gap-12'>
-                  <div className="flex-col">
-                      <input
-                        type="text"
-                        placeholder="Digite seu link"
-                        className="bg-black rounded-sm text-center p-1"
-                        
-                        />
-                        <p className='text-black'>
-                          Pré visualização QR Code
-                        </p>
+    <main className="flex flex-col min-h-screen justify-center items-center bg-gradient-to-t from-[#00082B] to-[#3F81E8] px-4 py-8 md:px-12">
+      <span className="text-4xl md:text-5xl text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-[#3F81E8]">
+        OLÁ, SEJA BEM VINDO!
+      </span>
 
-                        <QRCodeCanvas
-                            value={"https://picturesofpeoplescanningqrcodes.tumblr.com/"}
-                            title={"Title for my QR Code"}
-                            size={188}
-                            bgColor={"#ffffff"}
-                            fgColor={"#000000"}
-                            level={"L"}
-                            imageSettings={{
-                              src: "https://static.zpao.com/favicon.png",
-                              x: undefined,
-                              y: undefined,
-                              height: 24,
-                              width: 24,
-                              opacity: 1,
-                              excavate: true,
-                            }}
-                          />
-                  </div>
-                      <div className="flex flex-col bg-white lg:w-96 md:w-56">
-                            <div className='text-black text-2xl font-semibold'>
-                              Cores
-                            </div>
-                              <div className='flex gap-4'>
-                                  <div>
-                                    <h2 className='text-black'>
-                                      Cor Principal
-                                    </h2>
-                                    <input
-                                      type="color"
-                                      className="w-full"
-                                    />
-                                  </div>
-                                  <div>
-                                    <h2 className='text-black'>
-                                      Cor Principal
-                                    </h2>
-                                    <input
-                                      type="color"
-                                      className="w-full"
-                                    />
-                                  </div>
-                              </div>
-                            <div className='flex flex-col text-black text-2xl font-semibold'>
-                              Logo
-                            </div>
-                              <div className='flex flex-col'>
-                                <h2 className='text-black mb-4'>
-                                  Adicione sua logo
-                                </h2>
-                                <div className='flex flex-col'>
-                                  <label
-                                    htmlFor="logo"
-                                    className="cursor-pointer bg-black text-white text-center px-6 py-2 rounded-md hover:bg-gray-800 gap-2 flex"
-                                  >
-                                    <FaUpload
-                                    className='mt-1'
-                                    width={200}
-                                    height={200} 
-                                    />
-                                    Selecione uma imagem
-                                  </label>
-                                  
-                                  <input
-                                    type="file"
-                                    id="logo"
-                                    accept="image/*"
-                                    className="hidden"
-                                  />
-                                </div>
-                              </div>
-                              <div className='flex flex-col'>
-                                <h2 className='text-black mt-4'>
-                                  Tamanho da logo
-                                </h2>
-                                  <button className='bg-black text-white'>
-                                    Escolher arquivo
-                                  </button>
-                              </div>
-                          
-                              <button className='bg-black mt-4 w-full'>
-                                Baixar Qr Code
-                              </button>
-                      </div>
-                </div>
-                  <footer className="mt-20 flex gap-4">
-                    <span className="mt-2">Criado por</span>
-                      <Link
-                        href="https://www.jcdesenvolvedorweb.com.br"
-                        target="_blank" 
-                        rel="noopener noreferrer">
+      <span className="text-xl md:text-3xl mt-10 md:mt-20 font-extrabold text-white text-center">
+        Crie QR codes dinâmicos, ilimitados e de forma prática.
+      </span>
 
-                          <Image
-                              src="/logo.png"
-                              alt="Logotipo JC Desenvolvedor Web"
-                              width={100}
-                              height={100} />
-                        </Link>
-                  </footer>
+      <div className="flex flex-col md:flex-row bg-white w-full max-w-5xl mt-10 rounded-xl p-6 md:p-12 gap-8">
+
+        <div className="flex flex-col flex-1">
+          <p className='text-black'>Digite seu link</p>
+          <input
+            type="text"
+            placeholder="Digite o link aqui"
+            value={inputUrl}
+            onChange={(e) => setinputUrl(e.target.value)}
+            className="bg-zinc-200 text-black rounded-md text-center p-2 w-full"
+          />
+          <p className="text-black mt-4 mx-auto">Pré-visualização QR Code</p>
+          <div className="mx-auto">
+
+          <QRCodeCanvas
+            value={inputUrl}
+            title={inputUrl}
+            size={250}
+            bgColor={bgColor}
+            fgColor={fgColor}
+            level="L"
+            imageSettings={{
+              src: logoUrl,
+              x: undefined,
+              y: undefined,
+              height: 24,
+              width: 24,
+              opacity: 1,
+              excavate: true,
+            }}
+          />
+          </div>
+        </div>
+
+
+        <div className="flex flex-col bg-white w-full md:w-56 lg:w-96">
+          <div className="text-black text-2xl font-semibold mb-4">Cores</div>
+
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <h2 className="text-black mb-1">Cor Principal</h2>
+              <input
+                type="color"
+                value={bgColor}
+                onChange={(e) => setBgColor(e.target.value)}
+                className="w-full h-10 rounded-md bg-zinc-200 border border-zinc-400 hover:border-zinc-200 transition" />
+            </div>
+            <div className="flex-1">
+              <h2 className="text-black mb-1">Cor Secundária</h2>
+              <input
+                type="color"
+                value={fgColor}
+                onChange={(e) => setFgColor(e.target.value)}
+                className="w-full h-10 rounded-md bg-zinc-200 border border-zinc-400 hover:border-zinc-200 transition"  />
+            </div>
+          </div>
+
+          <div className="text-black text-2xl font-semibold mt-6 mb-2">Logo</div>
+          <div className="flex flex-col">
+            <h2 className="text-black mb-2">Adicione sua logo</h2>
+            <label
+              htmlFor="logo"
+              className="cursor-pointer bg-zinc-300 text-black text-center px-6 py-2 rounded-md hover:bg-zinc-200 flex items-center gap-2"
+            >
+              <FaUpload />
+              Selecione uma imagem
+            </label>
+              <input
+                type="file"
+                onChange={handleLogoSelection}
+                id="logo"
+                accept="image/*"
+                className="hidden" />
+          </div>
+
+          <div className="flex flex-col mt-4">
+            <h2 className="text-black mb-2">Tamanho da logo</h2>
+            <select className="bg-zinc-300 text-black px-4 py-2 rounded-md hover:bg-zinc-200">
+              Escolher tamanho
+              <option value="18">18px x 18px</option>
+              <option value="38">38px x 38px</option>
+              <option value="47">47px x 47px</option>
+              <option value="56">56px x 56px</option>
+            </select>
+          </div>
+
+          <button className="cursor-pointer bg-[#2e74e4] text-white px-4 py-4 rounded-md hover:bg-[#3c80ee] mt-6 w-full">
+            <span className="text-lg font-semibold">Baixar QR Code</span>
+          </button>
+        </div>
+      </div>
+
+      <footer className="mt-16 flex flex-col md:flex-row items-center gap-4">
+        <span className="text-white">Criado por</span>
+        <Link
+          href="https://www.jcdesenvolvedorweb.com.br"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            src="/logo.png"
+            alt="Logotipo JC Desenvolvedor Web"
+            width={100}
+            height={100}
+          />
+        </Link>
+      </footer>
     </main>
   );
 }
