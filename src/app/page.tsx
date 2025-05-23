@@ -1,7 +1,7 @@
 'use client'
 
 import { QRCodeCanvas } from 'qrcode.react';
-import { FaUpload } from 'react-icons/fa';
+import { FaUpload, FaDownload } from 'react-icons/fa';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -46,7 +46,7 @@ export default function Home() {
 
   return (
     <main className="flex flex-col min-h-screen justify-center items-center bg-gradient-to-t from-[#00082B] to-[#3F81E8] px-4 py-8 md:px-12">
-      <span className="text-4xl md:text-5xl text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-[#3F81E8]">
+      <span className="mt-8 text-4xl md:text-6xl text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-[#3F81E8]">
         OLÁ, SEJA BEM VINDO!
       </span>
 
@@ -57,17 +57,17 @@ export default function Home() {
       <div className="flex flex-col md:flex-row bg-white w-full max-w-5xl mt-10 rounded-xl p-6 md:p-12 gap-8">
 
         <div className="flex flex-col flex-1">
-          <p className='text-black'>Digite seu link</p>
+          <p className='text-black text-lg font-semibold text-center md:text-start'>Digite seu link</p>
           <input
             type="text"
             placeholder="Digite o link aqui"
             value={inputUrl}
             onChange={(e) => setinputUrl(e.target.value)}
-            className="bg-zinc-200 text-black rounded-md text-center p-2 w-full"
+            className="bg-zinc-200 text-black rounded-md text-center p-2 w-full mt-1"
           />
-          <p className="text-black mt-4 mx-auto">Pré-visualização QR Code</p>
+          <p className="text-black text-[20px] mt-8 mx-auto font-semibold">Pré-visualização QR Code</p>
             <div ref={qrCodeRef}
-              className="mx-auto">
+              className="mx-auto mt-4">
                 <QRCodeCanvas
                   value={inputUrl}
                   title={inputUrl}
@@ -75,17 +75,21 @@ export default function Home() {
                   bgColor={bgColor}
                   fgColor={fgColor}
                   level="L"
-                  imageSettings={{
-                    src: logoUrl,
-                    x: undefined,
-                    y: undefined,
-                    height: qrLogoSize,
-                    width: qrLogoSize,
-                    opacity: 1,
-                    excavate: true,
-                    crossOrigin: 'anonymous'
-                  }}
-                />
+                  imageSettings={
+                  qrLogoSize > 0
+                    ? {
+                        src: logoUrl,
+                        x: undefined,
+                        y: undefined,
+                        height: qrLogoSize,
+                        width: qrLogoSize,
+                        opacity: 1,
+                        excavate: true,
+                        crossOrigin: 'anonymous',
+                      }
+                    : undefined
+                }
+              />
             </div>
         </div>
 
@@ -95,7 +99,7 @@ export default function Home() {
 
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
-              <h2 className="text-black mb-1">Cor Principal</h2>
+              <h2 className="text-black mb-1 font-medium lg:text-lg md:text-sm">Cor Principal</h2>
               <input
                 type="color"
                 value={bgColor}
@@ -103,7 +107,7 @@ export default function Home() {
                 className="w-full h-10 rounded-md bg-zinc-200 border border-zinc-400 hover:border-zinc-200 transition" />
             </div>
             <div className="flex-1">
-              <h2 className="text-black mb-1">Cor Secundária</h2>
+              <h2 className="text-black mb-1 font-medium lg:text-lg md:text-sm">Cor Secundária</h2>
               <input
                 type="color"
                 value={fgColor}
@@ -112,15 +116,15 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="text-black text-2xl font-semibold mt-6 mb-2">Logo</div>
+          <div className="text-black text-2xl font-semibold mt-6 mb-4">Logo</div>
           <div className="flex flex-col">
-            <h2 className="text-black mb-2">Adicione sua logo</h2>
+            <h2 className="text-black mb-2 text-lg font-medium">Adicione sua logo</h2>
             <label
               htmlFor="logo"
-              className="cursor-pointer bg-zinc-300 text-black text-center px-6 py-2 rounded-md hover:bg-zinc-200 flex items-center gap-2"
+              className=" flex items-center justify-center cursor-pointer bg-zinc-300 text-black text-center px-6 py-2 rounded-md hover:bg-zinc-200 gap-2"
             >
-              <FaUpload />
-              Selecione uma imagem
+              <FaUpload className='w-5 h-5'/>
+              <span className="md:text-sm lg:text-lg">Selecione uma imagem</span>
             </label>
               <input
                 type="file"
@@ -130,13 +134,13 @@ export default function Home() {
                 className="hidden" />
           </div>
 
-          <div className="flex flex-col mt-4">
-            <h2 className="text-black mb-2">Tamanho da logo</h2>
+          <div className="flex flex-col mt-6 ">
+            <h2 className="text-black mb-4 font-semibold text-lg">Tamanho da logo</h2>
             <select
               value={qrLogoSize}
               onChange={(e) => setqrLogoSize(Number(e.target.value))}
-              className="bg-zinc-300 text-black px-4 py-2 rounded-md hover:bg-zinc-200">
-              Escolher tamanho
+              className=" bg-zinc-300 text-black px-6 py-2 rounded-md hover:bg-zinc-200 ">
+              <option value="0">Sem imagem</option>
               <option value="18">18px x 18px</option>
               <option value="38">38px x 38px</option>
               <option value="47">47px x 47px</option>
@@ -146,14 +150,15 @@ export default function Home() {
 
           <button
             onClick={handleQrDownload}
-            className="cursor-pointer bg-[#2e74e4] text-white px-4 py-4 rounded-md hover:bg-[#3c80ee] mt-6 w-full">
+            className="flex items-center justify-center gap-2 cursor-pointer bg-[#2e74e4] text-white px-6 py-4 rounded-md hover:bg-[#3c80ee] mt-6 w-full">
+            <FaDownload className="w-5 h-5"/>
             <span className="text-lg font-semibold">Baixar QR Code</span>
           </button>
         </div>
       </div>
 
-      <footer className="mt-16 flex flex-col md:flex-row items-center gap-4">
-        <span className="text-white">Criado por</span>
+      <footer className="mt-16 flex flex-col md:flex-row items-center gap-4 bottom-0">
+        <span className="text-white text-sm font-light">Criado por</span>
         <Link
           href="https://www.jcdesenvolvedorweb.com.br"
           target="_blank"
