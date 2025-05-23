@@ -5,14 +5,17 @@ import { FaUpload } from 'react-icons/fa';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { useEffect } from 'react';
+import { useRef } from 'react';
 
 export default function Home() {
+  
 
   const [inputUrl, setinputUrl] = useState<string>('');
   const [fgColor, setFgColor] = useState<string>('#00082B');
   const [bgColor, setBgColor] = useState<string>('#FFFFFF');
   const [logoUrl, setLogoUrl] = useState<string>('/fav.png');
+  const [qrLogoSize, setqrLogoSize] = useState<number>(38);
+  const qrCodeRef = useRef<HTMLDivElement>(null);
 
   const handleLogoSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -29,6 +32,18 @@ export default function Home() {
     }
   }
   
+    const handleQrDownload = () => {
+      if (!qrCodeRef.current) return;
+        const canvas = qrCodeRef.current.querySelector("canvas");
+          if (!canvas) return;
+
+          const link = document.createElement("a");
+          link.href = canvas.toDataURL("image/png");
+          link.download = "qrcode.png";
+          link.click();
+
+    }
+
   return (
     <main className="flex flex-col min-h-screen justify-center items-center bg-gradient-to-t from-[#00082B] to-[#3F81E8] px-4 py-8 md:px-12">
       <span className="text-4xl md:text-5xl text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-[#3F81E8]">
@@ -51,26 +66,27 @@ export default function Home() {
             className="bg-zinc-200 text-black rounded-md text-center p-2 w-full"
           />
           <p className="text-black mt-4 mx-auto">Pré-visualização QR Code</p>
-          <div className="mx-auto">
-
-          <QRCodeCanvas
-            value={inputUrl}
-            title={inputUrl}
-            size={250}
-            bgColor={bgColor}
-            fgColor={fgColor}
-            level="L"
-            imageSettings={{
-              src: logoUrl,
-              x: undefined,
-              y: undefined,
-              height: 24,
-              width: 24,
-              opacity: 1,
-              excavate: true,
-            }}
-          />
-          </div>
+            <div ref={qrCodeRef}
+              className="mx-auto">
+                <QRCodeCanvas
+                  value={inputUrl}
+                  title={inputUrl}
+                  size={250}
+                  bgColor={bgColor}
+                  fgColor={fgColor}
+                  level="L"
+                  imageSettings={{
+                    src: logoUrl,
+                    x: undefined,
+                    y: undefined,
+                    height: qrLogoSize,
+                    width: qrLogoSize,
+                    opacity: 1,
+                    excavate: true,
+                    crossOrigin: 'anonymous'
+                  }}
+                />
+            </div>
         </div>
 
 
@@ -116,7 +132,10 @@ export default function Home() {
 
           <div className="flex flex-col mt-4">
             <h2 className="text-black mb-2">Tamanho da logo</h2>
-            <select className="bg-zinc-300 text-black px-4 py-2 rounded-md hover:bg-zinc-200">
+            <select
+              value={qrLogoSize}
+              onChange={(e) => setqrLogoSize(Number(e.target.value))}
+              className="bg-zinc-300 text-black px-4 py-2 rounded-md hover:bg-zinc-200">
               Escolher tamanho
               <option value="18">18px x 18px</option>
               <option value="38">38px x 38px</option>
@@ -125,7 +144,9 @@ export default function Home() {
             </select>
           </div>
 
-          <button className="cursor-pointer bg-[#2e74e4] text-white px-4 py-4 rounded-md hover:bg-[#3c80ee] mt-6 w-full">
+          <button
+            onClick={handleQrDownload}
+            className="cursor-pointer bg-[#2e74e4] text-white px-4 py-4 rounded-md hover:bg-[#3c80ee] mt-6 w-full">
             <span className="text-lg font-semibold">Baixar QR Code</span>
           </button>
         </div>
